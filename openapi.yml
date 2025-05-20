@@ -1,0 +1,213 @@
+openapi: 3.0.1
+info:
+  title: DualCube GameServer API
+  version: 1.0.0
+  description: API for DualCube GameServer
+
+servers:
+  - url: /apis
+
+paths:
+  /status:
+    get:
+      summary: 获取API服务器状态
+      operationId: getGameStatus
+      responses:
+        '200':
+          description: 服务器状态
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "api server is running"
+  /dual-cube/{id}:
+    get:
+      summary: 根据ID获取DualCube
+      operationId: getDualCubeById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: DualCube的UUID
+          schema:
+            type: string
+            format: uuid
+          example: "123e4567-e89b-12d3-a456-426614174000"
+      responses:
+        '200':
+          description: DualCube对象
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DualCube'
+        '404':
+          description: 未找到指定ID的DualCube
+
+  /list/dual:
+    get:
+      summary: 分页获取DualCube列表
+      operationId: getDualCubeList
+      parameters:
+        - name: page
+          in: query
+          description: 页码(从0开始)
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - name: size
+          in: query
+          description: 每页记录数
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+      responses:
+        '200':
+          description: DualCube列表
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DualCube'
+
+  /list/dual/sort/single:
+    get:
+      summary: 按singleSec倒序分页获取DualCube列表
+      operationId: getDualCubeListSortSingle
+      parameters:
+        - name: page
+          in: query
+          description: 页码(从0开始)，如果小于0则默认为0
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - name: size
+          in: query
+          description: 每页记录数，取值范围[1,100]，默认为10
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 100
+      responses:
+        '200':
+          description: 按singleSec倒序排序的DualCube列表
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DualCube'
+
+components:
+  schemas:
+    DualCubeDto:
+      type: object
+      required:
+        - uuid
+        - info
+        - timespec
+      properties:
+        uuid:
+          type: string
+          description: 客户端提供的唯一标识符
+          example: "device-123-xyz"
+        info:
+          $ref: '#/components/schemas/Info'
+        timespec:
+          $ref: '#/components/schemas/Timespec'
+          description: 单线程测试时间信息
+        multiTimespec:
+          $ref: '#/components/schemas/Timespec'
+          description: 多线程测试时间信息
+        version:
+          type: string
+          description: 客户端版本号
+          example: "1.0.3"
+    
+    Info:
+      type: object
+      properties:
+        hostname:
+          type: string
+          description: 主机名
+          example: "server-xyz"
+        os:
+          type: string
+          description: 操作系统信息
+          example: "linux 6.12.7-2-liquorix-amd64"
+        cpu:
+          type: string
+          description: CPU型号信息
+          example: "Intel Core i7-11700K"
+    
+    Timespec:
+      type: object
+      properties:
+        sec:
+          type: integer
+          format: int64
+          description: 秒数
+          example: 5
+        nanosec:
+          type: integer
+          format: int64
+          description: 纳秒数
+          example: 45000000
+    
+    DualCube:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: 唯一标识符(UUID)
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        ident:
+          type: string
+          description: 客户端提供的标识符
+          example: "device-123-xyz"
+        hostname:
+          type: string
+          description: 主机名
+          example: "server-xyz"
+        os:
+          type: string
+          description: 操作系统信息
+          example: "linux 6.12.7-2-liquorix-amd64"
+        cpu:
+          type: string
+          description: CPU型号信息
+          example: "Intel Core i7-11700K"
+        singleSec:
+          type: integer
+          format: int64
+          description: 单线程测试的秒数
+          example: 5
+        singleNanosec:
+          type: integer
+          format: int64
+          description: 单线程测试的纳秒数
+          example: 45000000
+        multiSec:
+          type: integer
+          format: int64
+          description: 多线程测试的秒数
+          example: 2
+        multiNanosec:
+          type: integer
+          format: int64
+          description: 多线程测试的纳秒数
+          example: 10000000
+        version:
+          type: string
+          description: 客户端版本号
+          example: "1.0.3"
+        createdAt:
+          type: string
+          format: date-time
+          description: 记录创建时间
+          example: "2023-09-15T14:30:00Z" 
