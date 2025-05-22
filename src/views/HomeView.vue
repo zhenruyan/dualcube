@@ -178,23 +178,23 @@ onMounted(() => {
         <table class="table table-striped table-hover">
           <thead class="table-dark">
             <tr>
-              <th>ID</th>
-              <th>标识符</th>
+              <th>提交时间</th>
+              <th>CPU</th>
               <th>主机名</th>
               <th>操作系统</th>
-              <th>单线程(秒)</th>
-              <th>多线程(秒)</th>
+              <th>单线程(秒)</th>              
+              <!-- <th>多线程(秒)</th> -->
               <th>操作</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="cube in dualCubes" :key="cube.id">
-              <td class="text-truncate" style="max-width: 150px;">{{ cube.id }}</td>
-              <td>{{ cube.ident }}</td>
+              <td class="text-truncate" style="max-width: 200px;">{{ cube.createdAt }}</td>
+              <td class="text-truncate" style="max-width: 200px;">{{ cube.cpu }}</td>
               <td>{{ cube.hostname }}</td>
               <td>{{ cube.os }}</td>
               <td>{{ cube.singleSec }}</td>
-              <td>{{ cube.multiSec }}</td>
+              <!-- <td>{{ cube.multiSec }}</td> -->
               <td>
                 <button class="btn btn-sm btn-info" @click="viewDetail(cube.id || '')">
                   <i class="bi bi-eye me-1"></i> 详情
