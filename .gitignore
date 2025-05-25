@@ -26,3 +26,5 @@ build/
 .vscode/
 *.db
 node_modules/
+
+dist/
